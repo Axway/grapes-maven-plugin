@@ -2,6 +2,7 @@
 -------------
 * Split the data collection and the notification in two goals
 * Collect artifacts size in the report
+* Update Maven project to be compliant with central deployment rules
 
 1.1.0
 -------------

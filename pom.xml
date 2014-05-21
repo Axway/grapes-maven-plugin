@@ -10,17 +10,30 @@
     <description>Maven plugin able to send dependency information to a Grapes server</description>
     <url>https://github.com/Axway/grapes-maven-plugin</url>
 
-    <properties>
-        <maven.version>3.0.5</maven.version>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <scm>
-	<connection>scm:git:git@github.com:Axway/grapes-maven-plugin.git</connection>
-    	<url>scm:git:git@github.com:Axway/grapes-maven-plugin.git</url>
-    	<developerConnection>scm:git:git@github.com:Axway/grapes-maven-plugin.git</developerConnection>
-	<tag>HEAD</tag>
+        <connection>scm:git:git@github.com:Axway/grapes-maven-plugin.git</connection>
+        <url>scm:git:git@github.com:Axway/grapes-maven-plugin.git</url>
+        <developerConnection>scm:git:git@github.com:Axway/grapes-maven-plugin.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <properties>
+        <maven.version>3.0.5</maven.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <developers>
         <developer>
@@ -39,13 +52,6 @@
             </properties>
         </developer>
     </developers>
-
-    <licenses>
-	<license>
-		<name>The Apache Software License, Version 2.0</name>
-		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	</license>
-    </licenses>
 
     <dependencies>
         <dependency>
@@ -184,15 +190,6 @@
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-javadoc-plugin</artifactId>
 			<version>2.9.1</version>
-            <executions>
-                <execution>
-                    <id>attach-sources</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                </execution>
-            </executions>
 		</plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -232,20 +229,6 @@
 				</rules>
 			</configuration>
 		</plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.2.1</version>
-            <executions>
-                <execution>
-                    <id>attach-sources</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>jar-no-fork</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
 	</plugins>
     </build>
 
