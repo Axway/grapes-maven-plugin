@@ -1,9 +1,9 @@
 package org.axway.grapes.maven;
 
+import java.io.File;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 import org.axway.grapes.commons.datamodel.Module;
 import org.axway.grapes.commons.utils.FileUtils;
@@ -13,31 +13,13 @@ import org.axway.grapes.maven.report.ModuleBuilder;
 import org.axway.grapes.maven.resolver.ArtifactResolver;
 import org.axway.grapes.maven.resolver.LicenseResolver;
 
-import java.io.File;
-import java.util.List;
-
 /**
  * Goal which gathers and send dependencies information to Grapes.
  *
  * @goal generate
  * @phase package
  */
-public class GenerateMojo extends AbstractMojo{
-
-    /**
-     * Indicates whether the build will continue even if there are clean errors.
-     * If true, an exception will stop the maven execution on error
-     * If false, the error will be logged the maven life cycle will continue.
-     * @parameter property="grapes.failOnError"
-     */
-    private boolean failOnError = true;
-
-    /**
-     * @parameter property="project"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
+public class GenerateMojo extends AbstractGrapesMojo {
 
     /**
      * @component
@@ -50,14 +32,6 @@ public class GenerateMojo extends AbstractMojo{
      * @readonly
      */
     private ArtifactRepository localRepository;
-
-    /**
-     * The projects in the reactor.
-     *
-     * @parameter property="reactorProjects"
-     * @readonly
-     */
-    private List<MavenProject> reactorProjects;
 
     public void execute() throws MojoExecutionException {
         try {
