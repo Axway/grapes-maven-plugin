@@ -44,7 +44,7 @@ public class ArtifactResolver {
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
     public void resolveArtifact(final MavenProject project, final Artifact artifact) throws MojoExecutionException {
-        logger.debug("Resolving artifact " + artifact.toString());
+        logger.info("Resolving artifact " + artifact.toString());
 
         final ArtifactResolutionRequest artifactRequest = new ArtifactResolutionRequest();
         artifactRequest.setArtifact(artifact);
@@ -54,7 +54,7 @@ public class ArtifactResolver {
         final ArtifactResolutionResult resolutionResult = repositorySystem.resolve(artifactRequest);
 
         if (!resolutionResult.isSuccess()) {
-            logger.debug("Failed to resolved " + artifact.toString() +" artifact.");
+            logger.info("Failed to resolved " + artifact.toString() +" artifact.");
         }
     }
 
