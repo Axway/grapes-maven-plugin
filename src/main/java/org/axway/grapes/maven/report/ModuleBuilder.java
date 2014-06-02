@@ -40,7 +40,6 @@ public class ModuleBuilder {
         // End of trick
 
         /* Manage Artifacts */
-        artifactResolver.resolveArtifact(project, project.getArtifact());
         final Artifact mainArtifact = GrapesTranslator.getGrapesArtifact(project.getArtifact());
         addLicenses(mainArtifact, licenses);
         module.addArtifact(mainArtifact);

@@ -1,13 +1,10 @@
 package org.axway.grapes.maven;
 
-import org.apache.maven.plugin.AbstractMojo;
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.axway.grapes.commons.datamodel.Module;
 import org.axway.grapes.utils.client.GrapesClient;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Goal which gathers and send dependencies information to Grapes.
@@ -15,7 +12,7 @@ import java.util.List;
  * @goal notify
  * @phase install
  */
-public class NotifyMojo extends AbstractMojo{
+public class NotifyMojo extends AbstractGrapesMojo {
 
     /**
      * Host of the targeted Grapes server
@@ -41,29 +38,6 @@ public class NotifyMojo extends AbstractMojo{
      * @parameter property="grapes.password"
      */
     private String password;
-
-    /**
-     * Indicates whether the build will continue even if there are clean errors.
-     * If true, an exception will stop the maven execution on error
-     * If false, the error will be logged the maven life cycle will continue.
-     * @parameter property="grapes.failOnError"
-     */
-    private boolean failOnError = true;
-
-    /**
-     * @parameter property="project"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
-
-    /**
-     * The projects in the reactor.
-     *
-     * @parameter property="reactorProjects"
-     * @readonly
-     */
-    private List<MavenProject> reactorProjects;
 
     public void execute() throws MojoExecutionException {
         // Execute only one time
