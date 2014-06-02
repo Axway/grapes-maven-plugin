@@ -126,10 +126,12 @@ public class ModuleAggregator {
      */
     private MavenProject getParentProject(final String subModuleKey) {
         for(MavenProject project: reactorProjects){
-            final List<String> subModules = project.getModules();
-            if(subModules != null &&
-                    subModules.contains(subModuleKey)){
-                return project;
+            for(String submodule: project.getModules()){
+                if(submodule.equals(subModuleKey)
+                        // in case of a <module>folder/subModuleName</module>
+                        || submodule.endsWith(File.separator + subModuleKey)){
+                    return project;
+                }
             }
         }
 

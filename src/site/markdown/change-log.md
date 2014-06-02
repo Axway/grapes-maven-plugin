@@ -1,3 +1,9 @@
+1.2.1
+-------------
+* [Github issue #4](https://github.com/Axway/grapes-maven-plugin/issues/4) Manage paths in pom module fields
+* [Github issue #1](https://github.com/Axway/grapes-maven-plugin/issues/1) Remove useless artifact resolution
+
+
 1.2.0
 -------------
 * Split the data collection and the notification in two goals
