@@ -31,18 +31,17 @@ public class ModuleBuilder {
         final Module module = GrapesTranslator.getGrapesModule(project);
         final List<License> licenses = licenseResolver.resolve(project);
 
-        // Trick to add project pom file as a module artifact
-        final Artifact pomArtifact = GrapesTranslator.getGrapesArtifact(project.getArtifact());
-        addLicenses(pomArtifact, licenses);
-        pomArtifact.setType("pom");
-        pomArtifact.setExtension("xml");
-        module.addArtifact(pomArtifact);
-        // End of trick
-
         /* Manage Artifacts */
         final Artifact mainArtifact = GrapesTranslator.getGrapesArtifact(project.getArtifact());
         addLicenses(mainArtifact, licenses);
         module.addArtifact(mainArtifact);
+
+        // Get pom file if main artifact is not already a pom file
+        if(!mainArtifact.getType().equals("pom")){
+            final Artifact pomArtifact = GrapesTranslator.getGrapesArtifact(project.getModel());
+            addLicenses(pomArtifact, licenses);
+            module.addArtifact(pomArtifact);
+        }
 
         for(int i = 0 ; i < project.getAttachedArtifacts().size() ; i++){
             artifactResolver.resolveArtifact(project, project.getAttachedArtifacts().get(i));

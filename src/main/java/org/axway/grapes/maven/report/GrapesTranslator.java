@@ -1,6 +1,7 @@
 package org.axway.grapes.maven.report;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.axway.grapes.commons.datamodel.Artifact;
@@ -85,6 +86,30 @@ public class GrapesTranslator {
         }
 
         return artifact;
+    }
+
+    /**
+     * Generate Grapes Artifact from a maven pom file
+     *
+     * @param pomFile Model
+     * @return Artifact
+     */
+    public static Artifact getGrapesArtifact(final Model pomFile) {
+
+        final Artifact artifact =  DataModelFactory.createArtifact(
+                pomFile.getGroupId(),
+                pomFile.getArtifactId(),
+                pomFile.getVersion(),
+                null,
+                "pom",
+                "xml");
+
+        final Long artifactSize = FileUtils.getSize(pomFile.getPomFile());
+        if(artifactSize != null){
+            artifact.setSize(String.valueOf(artifactSize));
+        }
+
+        return  artifact;
     }
 
     /**
