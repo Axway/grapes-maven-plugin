@@ -14,7 +14,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,19 +82,20 @@ public class LicenseResolver {
             final List<License> licenses = new ArrayList<License>();
             artifactResolver.resolveArtifact(project, modelArtifact);
 
-            final Model model = reader.read(new FileReader(modelArtifact.getFile()));
-            licenses.addAll(model.getLicenses());
+            final File pomFile = modelArtifact.getFile();
+            if(pomFile.exists()){
+                final Model model = reader.read(new FileReader(pomFile));
+                licenses.addAll(model.getLicenses());
 
-            if(model.getParent() != null){
-                final Parent parent = model.getParent();
-                final Artifact parentModel = getModelArtifact(parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
-                licenses.addAll(getLicenses(project, parentModel));
+                if(model.getParent() != null){
+                    final Parent parent = model.getParent();
+                    final Artifact parentModel = getModelArtifact(parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
+                    licenses.addAll(getLicenses(project, parentModel));
+                }
             }
 
             return licenses;
-        } catch (FileNotFoundException e) {
-            throw new MojoExecutionException("Failed to read "  + modelArtifact.getFile() , e);
-        } catch (XmlPullParserException e) {
+        }  catch (XmlPullParserException e) {
             throw new MojoExecutionException("Failed to read "  + modelArtifact.getFile() , e);
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to read "  + modelArtifact.getFile() , e);

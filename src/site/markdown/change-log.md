@@ -1,3 +1,7 @@
+1.2.2
+-------------
+* [Github issue #5](https://github.com/Axway/grapes-maven-plugin/issues/5) End the report generation even if a dependency pom file is missing
+
 1.2.1
 -------------
 * [Github issue #4](https://github.com/Axway/grapes-maven-plugin/issues/4) Manage paths in pom module fields
