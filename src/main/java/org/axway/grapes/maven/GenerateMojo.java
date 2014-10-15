@@ -34,6 +34,9 @@ public class GenerateMojo extends AbstractGrapesMojo {
     private ArtifactRepository localRepository;
 
     public void execute() throws MojoExecutionException {
+    	if (isExecuteSkipped()) {
+    		return;
+    	}
         try {
             final ModuleAggregator aggregator = new ModuleAggregator(reactorProjects);
             final ModuleBuilder moduleBuilder = new ModuleBuilder();
