@@ -1,3 +1,7 @@
+1.2.3
+-------------
+* [Github pull request #8](https://github.com/Axway/grapes-maven-plugin/pull/8) Add "grapes.skip" property  
+
 1.2.2
 -------------
 * [Github issue #5](https://github.com/Axway/grapes-maven-plugin/issues/5) End the report generation even if a dependency pom file is missing
