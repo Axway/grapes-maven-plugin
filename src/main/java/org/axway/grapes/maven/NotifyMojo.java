@@ -40,6 +40,9 @@ public class NotifyMojo extends AbstractGrapesMojo {
     private String password;
 
     public void execute() throws MojoExecutionException {
+    	if (isExecuteSkipped()) {
+    		return;
+    	}
         // Execute only one time
         if(project.equals(reactorProjects.get(0))){
             try {

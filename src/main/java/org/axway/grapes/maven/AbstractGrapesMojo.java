@@ -3,6 +3,7 @@ package org.axway.grapes.maven;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGrapesMojo extends AbstractMojo {
@@ -29,5 +30,19 @@ public abstract class AbstractGrapesMojo extends AbstractMojo {
      * @readonly
      */
     protected List<MavenProject> reactorProjects;
+    
+    /**
+     * Flag used to suppress execution.
+     *
+     * @parameter property="grapes.skip"
+     */
+    protected boolean skip;
+    
+    public boolean isExecuteSkipped() {
+    	if (skip) {
+    		getLog().info("Skipping Grapes execution.");
+    	}
+    	return skip;
+    }
 
 }
