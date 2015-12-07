@@ -20,14 +20,14 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
 
     private final MavenProject project;
 
-    private final List<String> groupIdFilters;
+    private final List<String> groupIdPrefixes;
 
-    public PromotionReporterTask(Log log, GrapesClient grapesClient, MavenProject project, List<String> groupIdFilters)
+    public PromotionReporterTask(Log log, GrapesClient grapesClient, MavenProject project, List<String> groupIdPrefixes)
     {
         this.log = log;
         this.grapesClient = grapesClient;
         this.project = project;
-        this.groupIdFilters = groupIdFilters;
+        this.groupIdPrefixes = groupIdPrefixes;
     }
 
     @Override
@@ -64,14 +64,14 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
 
     private boolean match(Dependency dependency)
     {
-        if (groupIdFilters.isEmpty())
+        if (groupIdPrefixes.isEmpty())
         {
             return true;
         }
 
-        for (String groupIdFilter : groupIdFilters)
+        for (String groupIdPrefixe : groupIdPrefixes)
         {
-            if (dependency.getGroupId().startsWith(groupIdFilter))
+            if (dependency.getGroupId().startsWith(groupIdPrefixe))
             {
                 return true;
             }

@@ -55,9 +55,9 @@ public class MultiModuleProjectStub extends AbstractProjectStub {
     @Override
     public List<Dependency> getDependencies() {
         Dependency junit = new Dependency();
-        junit.setGroupId("junit");
-        junit.setArtifactId("junit");
-        junit.setVersion("4.11");
+        junit.setGroupId(Artifacts.junit.getGroupId());
+        junit.setArtifactId(Artifacts.junit.getArtifactId());
+        junit.setVersion(Artifacts.junit.getVersion());
         return Collections.singletonList(junit);
     }
 }

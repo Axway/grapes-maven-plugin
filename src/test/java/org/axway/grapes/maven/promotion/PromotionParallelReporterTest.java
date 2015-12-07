@@ -1,7 +1,10 @@
 package org.axway.grapes.maven.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.axway.grapes.maven.materials.stubs.Artifacts.axwayFakeArtifact;
+import static org.axway.grapes.maven.materials.stubs.Artifacts.fakeArtifact;
+import static org.axway.grapes.maven.materials.stubs.Artifacts.junit;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.Set;
@@ -10,7 +13,6 @@ import java.util.SortedSet;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.axway.grapes.commons.datamodel.Artifact;
-import org.axway.grapes.commons.datamodel.DataModelFactory;
 import org.axway.grapes.maven.materials.stubs.MultiModuleProjectStub;
 import org.axway.grapes.utils.client.GrapesClient;
 import org.axway.grapes.utils.client.GrapesCommunicationException;
@@ -30,10 +32,6 @@ public class PromotionParallelReporterTest
 
     @Mock
     private GrapesClient grapesClient;
-
-    private Artifact junit = DataModelFactory.createArtifact("junit", "junit", "4.11", null, null, "jar");
-    private Artifact fakeArtifact = DataModelFactory.createArtifact("org.fake", "fake", "2.0.0", null, null, "jar");
-    private Artifact axwayFakeArtifact = DataModelFactory.createArtifact("org.axway", "fake", "1.0.0", null, null, "jar");
 
     @Before
     public void setUp() throws GrapesCommunicationException

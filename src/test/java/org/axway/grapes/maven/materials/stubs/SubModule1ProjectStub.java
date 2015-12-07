@@ -27,9 +27,9 @@ public class SubModule1ProjectStub extends AbstractProjectStub {
     @Override
     public List<Dependency> getDependencies() {
         Dependency dependency = new Dependency();
-        dependency.setGroupId("org.axway");
-        dependency.setArtifactId("fake");
-        dependency.setVersion("1.0.0");
+        dependency.setGroupId(Artifacts.axwayFakeArtifact.getGroupId());
+        dependency.setArtifactId(Artifacts.axwayFakeArtifact.getArtifactId());
+        dependency.setVersion(Artifacts.axwayFakeArtifact.getVersion());
         return Collections.singletonList(dependency);
     }
 }

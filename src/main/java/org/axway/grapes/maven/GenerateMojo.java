@@ -26,13 +26,6 @@ public class GenerateMojo extends AbstractGrapesMojo {
      */
     private RepositorySystem repositorySystem;
 
-    /**
-     * @parameter default-value="${localRepository}"
-     * @required
-     * @readonly
-     */
-    private ArtifactRepository localRepository;
-
     public void execute() throws MojoExecutionException {
     	if (isExecuteSkipped()) {
     		return;
