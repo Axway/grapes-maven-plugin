@@ -2,12 +2,19 @@ package org.axway.grapes.maven;
 
 import java.util.List;
 
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractGrapesMojo extends AbstractMojo {
-	
+
+    /**
+     * @parameter default-value="${localRepository}"
+     * @required
+     * @readonly
+     */
+    protected ArtifactRepository localRepository;
+
 	/**
      * Indicates whether the build will continue even if there are clean errors.
      * If true, an exception will stop the maven execution on error
