@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.axway.grapes.commons.datamodel.Artifact;
 import org.axway.grapes.maven.report.GrapesTranslator;
 import org.axway.grapes.utils.client.GrapesClient;
 
@@ -42,58 +39,56 @@ class PromotionParallelReporter
         this.timeout = timeout;
     }
 
-    public SortedSet<Artifact> report(MavenProject project, List<String> groupIdFilters)
+    public PromotionReport report(MavenProject project, List<String> groupIdFilters)
     {
         return getDependencies(project, groupIdFilters);
     }
 
-    private SortedSet<Artifact> getDependencies(MavenProject project, List<String> groupIdFilters)
+    private PromotionReport getDependencies(MavenProject project, List<String> groupIdFilters)
     {
+        PromotionReport report = new PromotionReport();
         try
         {
-            SortedSet<Artifact> dependencies = new TreeSet<Artifact>(new PromotionComparator());
-
             // get dependencies in parallel
             Collection<PromotionReporterTask> tasks = new ArrayList<PromotionReporterTask>();
             for (MavenProject collectedProject : project.getCollectedProjects())
             {
                 tasks.add(new PromotionReporterTask(log, grapesClient, collectedProject, groupIdFilters));
             }
-            List<Future<Set<Artifact>>> results = executor.invokeAll(tasks, timeout, TimeUnit.MINUTES);
+            List<Future<Set<PromotionReportItem>>> results = executor.invokeAll(tasks, timeout, TimeUnit.MINUTES);
 
             // aggregate results
-            for (Future<Set<Artifact>> result : results)
+            for (Future<Set<PromotionReportItem>> result : results)
             {
-                dependencies.addAll(result.get());
+                report.addAll(result.get());
             }
 
             // remove inner projects from dependencies
-            removeProjectArtifacts(project, dependencies);
-
-            return dependencies;
+            removeProjectArtifacts(project, report);
         }
         catch (InterruptedException e)
         {
-            return fatalError(e, "Timeout reached while processing Grapes report.");
+            fatalError(e, "Timeout reached while processing Grapes report.");
         }
         catch (ExecutionException e)
         {
-            return fatalError(e, "An error occured while processing Grapes report.");
+            fatalError(e, "An error occured while processing Grapes report.");
         }
+        return report;
     }
 
-    private SortedSet<Artifact> fatalError(final Exception e, final String errorMessage)
+    private void fatalError(final Exception e, final String errorMessage)
     {
         log.error(errorMessage);
         log.debug(e);
         throw new RuntimeException(errorMessage, e);
     }
 
-    private void removeProjectArtifacts(final MavenProject project, final Set<Artifact> dependencies)
+    private void removeProjectArtifacts(MavenProject project, PromotionReport report)
     {
         for (MavenProject collectedProject : project.getCollectedProjects())
         {
-            dependencies.remove(GrapesTranslator.getGrapesArtifact(collectedProject.getArtifact()));
+            report.remove(GrapesTranslator.getGrapesArtifact(collectedProject.getArtifact()));
         }
     }
 

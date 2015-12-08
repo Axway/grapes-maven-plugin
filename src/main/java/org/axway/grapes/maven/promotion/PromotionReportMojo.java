@@ -3,10 +3,8 @@ package org.axway.grapes.maven.promotion;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.axway.grapes.commons.datamodel.Artifact;
 import org.axway.grapes.maven.AbstractGrapesMojo;
 import org.axway.grapes.utils.client.GrapesClient;
 
@@ -64,8 +62,8 @@ public class PromotionReportMojo extends AbstractGrapesMojo
         }
 
         PromotionParallelReporter reporter = new PromotionParallelReporter(getLog(), createGrapesClient(), threads, timeout);
-        Set<Artifact> report = reporter.report(project, splitGroupIdPrefixes());
-        display(report);
+        PromotionReport report = reporter.report(project, splitGroupIdPrefixes());
+        report.display(getLog());
     }
 
     private GrapesClient createGrapesClient()
@@ -89,28 +87,4 @@ public class PromotionReportMojo extends AbstractGrapesMojo
         return Collections.emptyList();
     }
 
-    private void display(Set<Artifact> report)
-    {
-        for (Artifact artifact : report)
-        {
-            display(artifact);
-        }
-    }
-
-    private void display(Artifact artifact)
-    {
-        if (artifact.isPromoted())
-        {
-            getLog().info(artifactToString(artifact));
-        }
-        else
-        {
-            getLog().warn(artifactToString(artifact));
-        }
-    }
-
-    private String artifactToString(final Artifact artifact)
-    {
-        return String.format("%s %s", artifact.getGavc(), artifact.isPromoted()?"PROMOTED":"NOT PROMOTED");
-    }
 }

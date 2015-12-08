@@ -1,18 +1,13 @@
 package org.axway.grapes.maven.promotion;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.axway.grapes.maven.materials.stubs.Artifacts.axwayFakeArtifact;
-import static org.axway.grapes.maven.materials.stubs.Artifacts.fakeArtifact;
-import static org.axway.grapes.maven.materials.stubs.Artifacts.junit;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.Set;
-import java.util.SortedSet;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.axway.grapes.commons.datamodel.Artifact;
+import org.axway.grapes.maven.materials.stubs.Artifacts;
 import org.axway.grapes.maven.materials.stubs.MultiModuleProjectStub;
 import org.axway.grapes.utils.client.GrapesClient;
 import org.axway.grapes.utils.client.GrapesCommunicationException;
@@ -25,6 +20,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class PromotionParallelReporterTest
 {
+    private static final PromotionReportItem junit = new PromotionReportItem(Artifacts.junit);
+    private static final PromotionReportItem fakeArtifact = new PromotionReportItem(Artifacts.fakeArtifact);
+    private static final PromotionReportItem axwayFakeArtifact = new PromotionReportItem(Artifacts.axwayFakeArtifact);
+
     private PromotionParallelReporter reporter;
 
     @Mock
@@ -37,9 +36,9 @@ public class PromotionParallelReporterTest
     public void setUp() throws GrapesCommunicationException
     {
         reporter = new PromotionParallelReporter(log, grapesClient);
-        when(grapesClient.getArtifact(junit.getGavc())).thenReturn(junit);
-        when(grapesClient.getArtifact(fakeArtifact.getGavc())).thenReturn(fakeArtifact);
-        when(grapesClient.getArtifact(axwayFakeArtifact.getGavc())).thenReturn(axwayFakeArtifact);
+        when(grapesClient.getArtifact(junit.getGavc())).thenReturn(Artifacts.junit);
+        when(grapesClient.getArtifact(fakeArtifact.getGavc())).thenReturn(Artifacts.fakeArtifact);
+        when(grapesClient.getArtifact(axwayFakeArtifact.getGavc())).thenReturn(Artifacts.axwayFakeArtifact);
     }
 
     @Test
@@ -47,9 +46,9 @@ public class PromotionParallelReporterTest
     {
         MavenProject mavenProject = new MultiModuleProjectStub();
 
-        SortedSet<Artifact> result = reporter.report(mavenProject, Collections.<String>emptyList());
+        PromotionReport result = reporter.report(mavenProject, Collections.<String>emptyList());
 
-        assertThat(result).containsExactly(junit, axwayFakeArtifact, fakeArtifact);
+        assertThat(result.getItems()).containsExactly(junit, axwayFakeArtifact, fakeArtifact);
     }
 
     @Test
@@ -57,8 +56,8 @@ public class PromotionParallelReporterTest
     {
         MavenProject mavenProject = new MultiModuleProjectStub();
 
-        Set<Artifact> result = reporter.report(mavenProject, Collections.singletonList("org.axway"));
+        PromotionReport result = reporter.report(mavenProject, Collections.singletonList("org.axway"));
 
-        assertThat(result).containsExactly(axwayFakeArtifact);
+        assertThat(result.getItems()).containsExactly(axwayFakeArtifact);
     }
 }

@@ -8,15 +8,15 @@ import org.junit.Test;
 
 public class PromotionComparatorTest
 {
-    private PromotionComparator comparator = new PromotionComparator();
+    private PromotionReportItemComparator comparator = new PromotionReportItemComparator();
 
     @Test
     public void testCompareBasedOnArtifactId() throws Exception
     {
-        Artifact a1 = DataModelFactory.createArtifact("com.axway", "a1", "1.0.0-1", null, null, null);
-        Artifact a2 = DataModelFactory.createArtifact("com.axway", "a2", "1.0.0-1", null, null, null);
+        PromotionReportItem item1 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway", "a1", "1.0.0-1", null, null, null));
+        PromotionReportItem item2 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway", "a2", "1.0.0-1", null, null, null));
 
-        int result = comparator.compare(a1, a2);
+        int result = comparator.compare(item1, item2);
 
         assertTrue(result < 0);
     }
@@ -24,10 +24,10 @@ public class PromotionComparatorTest
     @Test
     public void testCompareBasedOnGroupId() throws Exception
     {
-        Artifact a1 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
-        Artifact a2 = DataModelFactory.createArtifact("com.axway.a2", "a", "1.0.0-1", null, null, null);
+        PromotionReportItem item1 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null));
+        PromotionReportItem item2 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a2", "a", "1.0.0-1", null, null, null));
 
-        int result = comparator.compare(a1, a2);
+        int result = comparator.compare(item1, item2);
 
         assertTrue(result < 0);
     }
@@ -35,10 +35,10 @@ public class PromotionComparatorTest
     @Test
     public void testCompareBasedOnVersion() throws Exception
     {
-        Artifact a1 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
-        Artifact a2 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-2", null, null, null);
+        PromotionReportItem item1 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null));
+        PromotionReportItem item2 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-2", null, null, null));
 
-        int result = comparator.compare(a1, a2);
+        int result = comparator.compare(item1, item2);
 
         assertTrue(result < 0);
     }
@@ -46,12 +46,15 @@ public class PromotionComparatorTest
     @Test
     public void testCompareBasedOnPromotion() throws Exception
     {
-        Artifact a1 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
-        Artifact a2 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-2", null, null, null);
+        final Artifact a1 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
         a1.setPromoted(false);
+        final Artifact a2 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-2", null, null, null);
         a2.setPromoted(true);
 
-        int result = comparator.compare(a1, a2);
+        PromotionReportItem item1 = new PromotionReportItem(a1);
+        PromotionReportItem item2 = new PromotionReportItem(a2);
+
+        int result = comparator.compare(item1, item2);
 
         assertTrue(result < 0);
     }
@@ -59,10 +62,10 @@ public class PromotionComparatorTest
     @Test
     public void testEquality() throws Exception
     {
-        Artifact a1 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
-        Artifact a2 = DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null);
+        PromotionReportItem item1 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null));
+        PromotionReportItem item2 = new PromotionReportItem(DataModelFactory.createArtifact("com.axway.a1", "a", "1.0.0-1", null, null, null));
 
-        int result = comparator.compare(a1, a2);
+        int result = comparator.compare(item1, item2);
 
         assertTrue(result == 0);
     }

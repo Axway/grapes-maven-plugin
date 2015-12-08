@@ -8,11 +8,9 @@ import java.util.concurrent.Callable;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.axway.grapes.commons.datamodel.Artifact;
 import org.axway.grapes.utils.client.GrapesClient;
-import org.axway.grapes.utils.client.GrapesCommunicationException;
 
-public class PromotionReporterTask implements Callable<Set<Artifact>>
+public class PromotionReporterTask implements Callable<Set<PromotionReportItem>>
 {
     private final GrapesClient grapesClient;
 
@@ -22,20 +20,23 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
 
     private final List<String> groupIdPrefixes;
 
+    private final PromotionReportItemLoader loader;
+
     public PromotionReporterTask(Log log, GrapesClient grapesClient, MavenProject project, List<String> groupIdPrefixes)
     {
         this.log = log;
         this.grapesClient = grapesClient;
         this.project = project;
         this.groupIdPrefixes = groupIdPrefixes;
+        this.loader = new PromotionReportItemLoader(log, grapesClient);
     }
 
     @Override
-    public Set<Artifact> call() throws Exception
+    public Set<PromotionReportItem> call() throws Exception
     {
         log.debug(String.format("reporting dependencies for project %s", project.getName()));
 
-        Set<Artifact> dependencies = new HashSet<Artifact>();
+        Set<PromotionReportItem> report = new HashSet<PromotionReportItem>();
         if (project.getDependencies() != null)
         {
             for (Dependency dependency : project.getDependencies())
@@ -44,14 +45,14 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
                 if (match(dependency))
                 {
                     log.debug(String.format("%s matches filter", dependency.getArtifactId()));
-                    Artifact remoteArtifact = getGrapesArtifactQuietly(dependency);
-                    if (remoteArtifact == null)
+                    PromotionReportItem item = loader.load(dependency);
+                    if (item == null)
                     {
                         log.debug(String.format("%s is not found in Grapes server", dependency.getArtifactId()));
                         continue;
                     }
                     log.debug(String.format("%s found in Grapes server", dependency.getArtifactId()));
-                    dependencies.add(remoteArtifact);
+                    report.add(item);
                 }
                 else
                 {
@@ -59,7 +60,7 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
                 }
             }
         }
-        return dependencies;
+        return report;
     }
 
     private boolean match(Dependency dependency)
@@ -79,40 +80,4 @@ public class PromotionReporterTask implements Callable<Set<Artifact>>
         return false;
     }
 
-    private Artifact getGrapesArtifactQuietly(Dependency dependency)
-    {
-        String gavc = dependencyGavc(dependency);
-        try
-        {
-            return grapesClient.getArtifact(gavc);
-        }
-        catch (GrapesCommunicationException e)
-        {
-            log.error(String.format("Error while getting artifact %s from Grapes server.", gavc));
-            log.debug(e);
-            return null;
-        }
-    }
-
-    private static String dependencyGavc(Dependency dependency)
-    {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append(nullToEmpty(dependency.getGroupId()));
-        sb.append(":");
-        sb.append(nullToEmpty(dependency.getArtifactId()));
-        sb.append(":");
-        sb.append(nullToEmpty(dependency.getVersion()));
-        sb.append(":");
-        sb.append(nullToEmpty(dependency.getClassifier()));
-        sb.append(":");
-        sb.append(nullToEmpty(dependency.getType()));
-
-        return sb.toString();
-    }
-
-    private static String nullToEmpty(String s)
-    {
-        return s == null? "":s;
-    }
 }
